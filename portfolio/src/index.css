@@ -5,7 +5,8 @@
   --black: #0a0a0a;
   --white: #ffffff;
   --gray: #f2f2f0;
-  --font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font: 'Inter', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  --font-display: 'Bebas Neue', Impact, 'Arial Narrow', sans-serif;
 }
 
 html { scroll-behavior: smooth; }
@@ -39,9 +40,6 @@ img { display: block; max-width: 100%; }
   display: flex;
   align-items: center;
   gap: 10px;
-  font-size: 15px;
-  font-weight: 800;
-  letter-spacing: -0.3px;
 }
 
 .nav-links { list-style: none; display: flex; gap: 36px; }
@@ -399,3 +397,30 @@ img { display: block; max-width: 100%; }
   .hero-text { left: 24px; bottom: 32px; }
   .scroll-hint { right: 24px; bottom: 32px; }
 }
+
+/* ── DISPLAY FONT (Bebas Neue) ── */
+.nav-logo,
+.hero-text h1,
+.section-title,
+.service-title,
+.whyme-title,
+.project-title,
+.stat-value,
+.process-title,
+.testimonial-name,
+.faq-q span,
+.footer-brand {
+  font-family: var(--font-display);
+  letter-spacing: 0.5px;
+}
+
+/* Adjust sizes for Bebas Neue (taller cap height, no bold weight needed) */
+.nav-logo { font-size: 22px; font-weight: 400; letter-spacing: 1px; }
+.hero-text h1 { font-weight: 400; letter-spacing: 1px; }
+.section-title { font-weight: 400; letter-spacing: 1px; line-height: 0.92; }
+.service-title { font-size: 22px; font-weight: 400; letter-spacing: 0.5px; }
+.whyme-title { font-size: 24px; font-weight: 400; letter-spacing: 0.5px; }
+.project-title { font-size: 26px; font-weight: 400; letter-spacing: 0.5px; }
+.stat-value { font-weight: 400; letter-spacing: 1px; }
+.process-title { font-size: 22px; font-weight: 400; letter-spacing: 0.5px; }
+.footer-brand { font-size: 20px; font-weight: 400; letter-spacing: 1px; }
