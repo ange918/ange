@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>PODIUM — Creative Direction & Production for Athleticism</title>
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --black: #0a0a0a;
+      --white: #ffffff;
+      --font: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+    }
+
+    html { scroll-behavior: auto; }
+
+    body {
+      background: var(--white);
+      color: var(--black);
+      font-family: var(--font);
+      overflow-x: hidden;
+    }
+
+    /* ── NAV ── */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 28px 48px;
+      mix-blend-mode: normal;
+    }
+
+    .logo {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -0.5px;
+      color: var(--black);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .logo svg { width: 32px; height: 32px; }
+
+    nav ul {
+      list-style: none;
+      display: flex;
+      gap: 40px;
+    }
+
+    nav ul li a {
+      text-decoration: none;
+      font-size: 13px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      color: var(--black);
+      text-transform: uppercase;
+    }
+
+    nav ul li a:hover { opacity: 0.5; }
+
+    /* ── HERO ── */
+    .hero {
+      position: relative;
+      width: 100%;
+      height: 100vh;
+      background: var(--white);
+      display: flex;
+      align-items: flex-end;
+      overflow: hidden;
+    }
+
+    /* The scroll container — tall enough to drive the animation */
+    .scroll-driver {
+      position: relative;
+      height: 400vh;
+    }
+
+    /* Sticky wrapper that holds the animation */
+    .sticky-scene {
+      position: sticky;
+      top: 0;
+      width: 100%;
+      height: 100vh;
+      overflow: hidden;
+      background: var(--white);
+    }
+
+    /* White overlay that shrinks away */
+    .white-overlay {
+      position: absolute;
+      inset: 0;
+      background: var(--white);
+      z-index: 2;
+      /* clip-path is driven by JS */
+      clip-path: inset(0% round 0%);
+      pointer-events: none;
+    }
+
+    /* Background scene (images/video visible through the blob) */
+    .scene-bg {
+      position: absolute;
+      inset: 0;
+      z-index: 1;
+    }
+
+    .scene-bg .img-layer {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center;
+      opacity: 0;
+      transition: opacity 0.6s ease;
+    }
+
+    .scene-bg .img-layer.active { opacity: 1; }
+
+    .img-layer-1 { background-color: #1a1a1a; background-image: url('https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=1600&q=80'); }
+    .img-layer-2 { background-color: #2a2a2a; background-image: url('https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=1600&q=80'); }
+    .img-layer-3 { background-color: #3a3a3a; background-image: url('https://images.unsplash.com/photo-1530549387789-4c1017266635?w=1600&q=80'); }
+
+    /* The blob mask that punches through the white overlay */
+    .blob-mask {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(1);
+      width: 360px;
+      height: 520px;
+      z-index: 3;
+      pointer-events: none;
+      /* The blob is applied as a clip-path on the bg via SVG filter */
+    }
+
+    /* Blob cutout: we use a SVG clipPath applied to a div that sits above bg but below white overlay */
+    .blob-window {
+      position: absolute;
+      inset: 0;
+      z-index: 2;
+      overflow: hidden;
+    }
+
+    .blob-window-inner {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%) scale(var(--blob-scale, 1));
+      transform-origin: center center;
+      width: 340px;
+      height: 500px;
+      will-change: transform;
+    }
+
+    .blob-window-inner svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* SVG image inside blob */
+    .blob-image {
+      position: absolute;
+      inset: 0;
+      background-size: cover;
+      background-position: center top;
+      background-image: url('https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=1600&q=80');
+      clip-path: url(#blobClip);
+      transform: scale(calc(1 / var(--blob-scale, 1)));
+      transform-origin: center center;
+      will-change: transform;
+    }
+
+    /* Hero bottom text */
+    .hero-text {
+      position: absolute;
+      bottom: 48px;
+      left: 48px;
+      z-index: 10;
+    }
+
+    .hero-text h1 {
+      font-size: clamp(24px, 4vw, 52px);
+      font-weight: 900;
+      line-height: 1.05;
+      text-transform: uppercase;
+      letter-spacing: -1px;
+      max-width: 600px;
+    }
+
+    .scroll-hint {
+      position: absolute;
+      bottom: 48px;
+      right: 48px;
+      z-index: 10;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      opacity: 0.5;
+    }
+
+    /* ── CONTENT SECTIONS (revealed after scroll animation) ── */
+    .content-section {
+      background: var(--white);
+      padding: 120px 48px;
+    }
+
+    .work-grid {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 2px;
+      margin-top: 80px;
+    }
+
+    .work-item {
+      aspect-ratio: 4/3;
+      overflow: hidden;
+      background: #111;
+      cursor: pointer;
+    }
+
+    .work-item img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.6s ease, opacity 0.4s ease;
+      opacity: 0.85;
+    }
+
+    .work-item:hover img {
+      transform: scale(1.05);
+      opacity: 1;
+    }
+
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      opacity: 0.4;
+      margin-bottom: 24px;
+    }
+
+    .section-title {
+      font-size: clamp(36px, 6vw, 96px);
+      font-weight: 900;
+      line-height: 0.95;
+      text-transform: uppercase;
+      letter-spacing: -2px;
+    }
+
+    .about-section {
+      background: var(--black);
+      color: var(--white);
+      padding: 120px 48px;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 80px;
+      align-items: center;
+    }
+
+    .about-section p {
+      font-size: clamp(18px, 2vw, 28px);
+      line-height: 1.4;
+      font-weight: 400;
+      opacity: 0.85;
+    }
+
+    .contact-section {
+      padding: 160px 48px;
+      text-align: center;
+    }
+
+    .contact-section a {
+      font-size: clamp(32px, 6vw, 80px);
+      font-weight: 900;
+      text-transform: uppercase;
+      letter-spacing: -2px;
+      color: var(--black);
+      text-decoration: none;
+      border-bottom: 4px solid var(--black);
+      padding-bottom: 8px;
+      transition: opacity 0.2s;
+    }
+
+    .contact-section a:hover { opacity: 0.4; }
+
+    footer {
+      padding: 32px 48px;
+      border-top: 1px solid rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      opacity: 0.4;
+    }
+
+    /* blob orbit particles */
+    .blob-particles {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 600px;
+      height: 600px;
+      z-index: 2;
+      pointer-events: none;
+      transition: transform 0.1s ease-out;
+    }
+
+    .particle {
+      position: absolute;
+      background: var(--black);
+      border-radius: 50%;
+      opacity: 0;
+      transition: opacity 0.5s;
+    }
+  </style>
+</head>
+<body>
+
+<!-- SVG defs for blob clip -->
+<svg width="0" height="0" style="position:absolute">
+  <defs>
+    <clipPath id="blobClip" clipPathUnits="objectBoundingBox">
+      <path d="
+        M0.48,0.02
+        C0.62,0.01 0.78,0.06 0.88,0.18
+        C0.98,0.30 1.00,0.47 0.95,0.60
+        C0.92,0.70 0.85,0.77 0.80,0.85
+        C0.74,0.94 0.70,1.02 0.58,1.02
+        C0.45,1.02 0.35,0.95 0.26,0.86
+        C0.17,0.77 0.08,0.66 0.04,0.52
+        C0.00,0.38 0.02,0.22 0.10,0.13
+        C0.19,0.04 0.34,-0.00 0.48,0.02Z
+      " />
+    </clipPath>
+  </defs>
+</svg>
+
+<!-- NAV -->
+<nav>
+  <div class="logo">
+    <svg viewBox="0 0 32 32" fill="none">
+      <circle cx="16" cy="16" r="14" stroke="#0a0a0a" stroke-width="3"/>
+      <path d="M10 22 L16 10 L22 22" stroke="#0a0a0a" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+    PODIUM
+  </div>
+  <ul>
+    <li><a href="#work">Work</a></li>
+    <li><a href="#about">About</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- SCROLL DRIVER + STICKY SCENE -->
+<div class="scroll-driver" id="scrollDriver">
+  <div class="sticky-scene" id="stickyScene">
+
+    <!-- BG images (visible through blob) -->
+    <div class="scene-bg">
+      <div class="img-layer img-layer-1 active"></div>
+      <div class="img-layer img-layer-2"></div>
+      <div class="img-layer img-layer-3"></div>
+    </div>
+
+    <!-- Blob window: clips the background so only blob area shows, then scales up -->
+    <div class="blob-window" id="blobWindow">
+      <div class="blob-window-inner" id="blobInner">
+        <svg viewBox="0 0 340 500" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <clipPath id="blobMask">
+              <path d="
+                M163,8
+                C211,3 265,21 299,61
+                C332,101 340,158 323,203
+                C312,237 287,260 272,288
+                C252,322 238,350 197,347
+                C153,344 119,320 88,290
+                C57,260 27,224 13,176
+                C0,128 7,74 34,44
+                C64,11 115,-3 163,8Z
+              "/>
+            </clipPath>
+          </defs>
+          <image
+            href="https://images.unsplash.com/photo-1552674605-db6ffd4facb5?w=800&q=80"
+            width="340" height="500"
+            preserveAspectRatio="xMidYMid slice"
+            clip-path="url(#blobMask)"
+          />
+        </svg>
+      </div>
+    </div>
+
+    <!-- Floating particles around blob -->
+    <div class="blob-particles" id="blobParticles">
+      <div class="particle" id="p1" style="width:60px;height:40px;top:15%;left:72%;border-radius:50%;"></div>
+      <div class="particle" id="p2" style="width:24px;height:24px;top:55%;left:80%;border-radius:50%;"></div>
+      <div class="particle" id="p3" style="width:18px;height:18px;top:70%;left:18%;border-radius:50%;"></div>
+    </div>
+
+    <!-- White overlay with hole -->
+    <div class="white-overlay" id="whiteOverlay"></div>
+
+    <!-- Hero text -->
+    <div class="hero-text" id="heroText">
+      <h1>We offer creative<br>direction &amp; production<br>for athleticism.</h1>
+    </div>
+    <div class="scroll-hint" id="scrollHint">Scroll Down</div>
+
+  </div>
+</div>
+
+<!-- WORK SECTION -->
+<section class="content-section" id="work">
+  <p class="section-label">Selected Work</p>
+  <h2 class="section-title">Work</h2>
+  <div class="work-grid">
+    <div class="work-item">
+      <img src="https://images.unsplash.com/photo-1461896836934-ffe607ba8211?w=800&q=80" alt="Project 1" loading="lazy"/>
+    </div>
+    <div class="work-item">
+      <img src="https://images.unsplash.com/photo-1530549387789-4c1017266635?w=800&q=80" alt="Project 2" loading="lazy"/>
+    </div>
+    <div class="work-item">
+      <img src="https://images.unsplash.com/photo-1541534741688-6078c6bfb5c5?w=800&q=80" alt="Project 3" loading="lazy"/>
+    </div>
+    <div class="work-item">
+      <img src="https://images.unsplash.com/photo-1476480862126-209bfaa8edc8?w=800&q=80" alt="Project 4" loading="lazy"/>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT SECTION -->
+<section class="about-section" id="about">
+  <div>
+    <p class="section-label" style="color:white;opacity:0.4">About</p>
+    <h2 class="section-title" style="color:white">We tell stories<br>through motion<br>&amp; image.</h2>
+  </div>
+  <div>
+    <p>We are a creative studio dedicated to the world of athletics. From campaign direction to full production, we partner with athletes, brands, and federations to craft compelling visual narratives.</p>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section class="contact-section" id="contact">
+  <p class="section-label" style="text-align:center">Get in touch</p>
+  <a href="mailto:hello@podium.global">hello@podium.global</a>
+</section>
+
+<footer>
+  <span>© 2026 Podium Global</span>
+  <span>Creative Direction & Production</span>
+</footer>
+
+<script>
+  const scrollDriver = document.getElementById('scrollDriver');
+  const blobInner    = document.getElementById('blobInner');
+  const whiteOverlay = document.getElementById('whiteOverlay');
+  const heroText     = document.getElementById('heroText');
+  const scrollHint   = document.getElementById('scrollHint');
+  const particles    = [
+    document.getElementById('p1'),
+    document.getElementById('p2'),
+    document.getElementById('p3'),
+  ];
+  const imgLayers = document.querySelectorAll('.img-layer');
+
+  // Show particles after a moment
+  setTimeout(() => {
+    particles.forEach((p, i) => {
+      setTimeout(() => { p.style.opacity = '0.85'; }, i * 200);
+    });
+  }, 400);
+
+  let currentImg = 0;
+  const imgInterval = setInterval(() => {
+    imgLayers[currentImg].classList.remove('active');
+    currentImg = (currentImg + 1) % imgLayers.length;
+    imgLayers[currentImg].classList.add('active');
+  }, 2800);
+
+  function lerp(a, b, t) { return a + (b - a) * t; }
+
+  function onScroll() {
+    const rect   = scrollDriver.getBoundingClientRect();
+    const total  = scrollDriver.offsetHeight - window.innerHeight;
+    const scrolled = -rect.top;
+    const progress = Math.max(0, Math.min(1, scrolled / total)); // 0→1
+
+    // Blob scale: starts at 1, grows to ~30 (fills screen)
+    const blobScale = 1 + progress * 38;
+    blobInner.style.setProperty('--blob-scale', blobScale);
+    blobInner.style.transform = `translate(-50%, -50%) scale(${blobScale})`;
+
+    // White overlay shrinks: we use clip-path inset that grows inward = no, instead
+    // we fade out white overlay once blob is large enough
+    // Actually we hide white overlay by making it transparent so blob bg shows
+    const overlayOpacity = Math.max(0, 1 - progress * 2.5);
+    whiteOverlay.style.opacity = overlayOpacity;
+
+    // Particles orbit outward then fade
+    const pScale = 1 + progress * 6;
+    document.getElementById('blobParticles').style.transform =
+      `translate(-50%, -50%) scale(${pScale})`;
+    const pOpacity = Math.max(0, 1 - progress * 3);
+    particles.forEach(p => { p.style.opacity = 0.85 * pOpacity; });
+
+    // Hero text fades out
+    const textOpacity = Math.max(0, 1 - progress * 4);
+    heroText.style.opacity = textOpacity;
+    scrollHint.style.opacity = Math.max(0, 0.5 - progress * 5);
+  }
+
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+</script>
+</body>
+</html>
