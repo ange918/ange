@@ -8,14 +8,15 @@ const BG_IMAGES = [
 ];
 
 export default function Hero() {
-  const driverRef  = useRef(null);
-  const maskRef    = useRef(null); // the white SVG mask
-  const textRef    = useRef(null);
-  const hintRef    = useRef(null);
-  const imgRefs    = useRef([]);
-  const currentImg = useRef(0);
+  const driverRef   = useRef(null);
+  const blobRef     = useRef(null);
+  const overlayRef  = useRef(null);
+  const textRef     = useRef(null);
+  const hintRef     = useRef(null);
+  const particlesRef = useRef(null);
+  const imgRefs     = useRef([]);
+  const currentImg  = useRef(0);
 
-  // Cycle background images
   useEffect(() => {
     const interval = setInterval(() => {
       if (!imgRefs.current.length) return;
@@ -26,7 +27,6 @@ export default function Hero() {
     return () => clearInterval(interval);
   }, []);
 
-  // Scroll animation: scale up the white mask (16 hole gets bigger → full bg revealed)
   useEffect(() => {
     const onScroll = () => {
       const driver = driverRef.current;
@@ -35,14 +35,17 @@ export default function Hero() {
       const scrolled = -driver.getBoundingClientRect().top;
       const p        = Math.max(0, Math.min(1, scrolled / total));
 
-      // White mask scales up from center → white edges leave screen → bg fully visible
-      if (maskRef.current) {
-        const scale = 1 + p * 20;
-        maskRef.current.style.transform = `translate(-50%, -50%) scale(${scale})`;
+      if (blobRef.current) {
+        const scale = 1 + p * 40;
+        blobRef.current.style.transform = `translate(-50%, -50%) scale(${scale})`;
       }
-
-      if (textRef.current) textRef.current.style.opacity = Math.max(0, 1 - p * 4);
-      if (hintRef.current) hintRef.current.style.opacity = Math.max(0, 0.5 - p * 5);
+      if (overlayRef.current)  overlayRef.current.style.opacity  = Math.max(0, 1 - p * 2.5);
+      if (textRef.current)     textRef.current.style.opacity     = Math.max(0, 1 - p * 4);
+      if (hintRef.current)     hintRef.current.style.opacity     = Math.max(0, 0.5 - p * 5);
+      if (particlesRef.current) {
+        particlesRef.current.style.transform = `translate(-50%,-50%) scale(${1 + p * 7})`;
+        particlesRef.current.style.opacity   = Math.max(0, 1 - p * 3);
+      }
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -53,7 +56,7 @@ export default function Hero() {
     <div className="scroll-driver" ref={driverRef}>
       <div className="sticky-scene">
 
-        {/* Dark background + images — visible only through the "16" hole */}
+        {/* Background images */}
         <div className="scene-bg">
           {BG_IMAGES.map((src, i) => (
             <div
@@ -65,39 +68,36 @@ export default function Hero() {
           ))}
         </div>
 
-        {/*
-          White SVG that covers the whole viewport.
-          The "16" is a hole (black in mask = transparent = shows bg through).
-          On scroll, this SVG scales up → white border moves off-screen → full bg revealed.
-        */}
-        <div className="sixteen-mask-wrap" ref={maskRef}>
-          <svg
-            viewBox="0 0 1440 900"
-            className="sixteen-svg"
-            xmlns="http://www.w3.org/2000/svg"
-            preserveAspectRatio="xMidYMid slice"
-          >
-            <defs>
-              <mask id="sixteenHole">
-                {/* White = show white overlay */}
-                <rect width="1440" height="900" fill="white"/>
-                {/* Black = hole → background shows through */}
-                <text
-                  x="72%"
-                  y="96%"
-                  textAnchor="middle"
-                  fontFamily="Anton, Impact, sans-serif"
-                  fontSize="860"
-                  fill="black"
-                >16</text>
-              </mask>
-            </defs>
-            {/* The white layer with "16" punched out */}
-            <rect width="1440" height="900" fill="white" mask="url(#sixteenHole)"/>
-          </svg>
+        {/* Blob window */}
+        <div className="blob-window">
+          <div className="blob-inner" ref={blobRef}>
+            <svg viewBox="0 0 340 500" xmlns="http://www.w3.org/2000/svg" width="340" height="500">
+              <defs>
+                <clipPath id="blobClip">
+                  <path d="M163,8 C211,3 265,21 299,61 C332,101 340,158 323,203 C312,237 287,260 272,288 C252,322 238,350 197,347 C153,344 119,320 88,290 C57,260 27,224 13,176 C0,128 7,74 34,44 C64,11 115,-3 163,8Z"/>
+                </clipPath>
+              </defs>
+              <image
+                href={BG_IMAGES[0]}
+                width="340" height="500"
+                preserveAspectRatio="xMidYMid slice"
+                clipPath="url(#blobClip)"
+              />
+            </svg>
+          </div>
         </div>
 
-        {/* Hero text — bottom left */}
+        {/* Floating particles */}
+        <div className="blob-particles" ref={particlesRef}>
+          <div className="particle" style={{ width:60, height:40, top:'14%', left:'72%', borderRadius:'50%', background:'#0a0a0a', opacity:0.85 }}/>
+          <div className="particle" style={{ width:22, height:22, top:'56%', left:'80%', borderRadius:'50%', background:'#0a0a0a', opacity:0.85 }}/>
+          <div className="particle" style={{ width:16, height:16, top:'72%', left:'17%', borderRadius:'50%', background:'#0a0a0a', opacity:0.85 }}/>
+        </div>
+
+        {/* White overlay */}
+        <div className="white-overlay" ref={overlayRef} />
+
+        {/* Hero text */}
         <div className="hero-text" ref={textRef}>
           <h1>
             {hero.headline.map((line, i) => (
