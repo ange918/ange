@@ -23,13 +23,7 @@ export default function Nav() {
   return (
     <>
       <nav className="nav">
-        <div className="nav-logo">
-          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-            <rect width="28" height="28" rx="6" fill="#0a0a0a"/>
-            <text x="5" y="20" fontSize="14" fontWeight="900" fill="white" fontFamily="Helvetica Neue, sans-serif">A</text>
-          </svg>
-          Ange Akonde
-        </div>
+        <div className="nav-logo">Ange Akonde</div>
 
         {/* Desktop links */}
         <ul className="nav-links">
@@ -46,13 +40,7 @@ export default function Nav() {
       {/* Mobile full-screen drawer */}
       <div className={`mobile-drawer${open ? ' mobile-drawer--open' : ''}`}>
         <div className="drawer-top">
-          <div className="nav-logo" style={{ color: '#fff' }}>
-            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-              <rect width="28" height="28" rx="6" fill="#fff"/>
-              <text x="5" y="20" fontSize="14" fontWeight="900" fill="#0a0a0a" fontFamily="Helvetica Neue, sans-serif">A</text>
-            </svg>
-            Ange Akonde
-          </div>
+          <div className="nav-logo" style={{ color: '#fff' }}>Ange Akonde</div>
           <button className="menu-trigger menu-trigger--light" onClick={close} aria-label="Fermer">
             <span className="menu-trigger-label">CLOSE</span>
             <GridIcon />

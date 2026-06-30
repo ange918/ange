@@ -63,7 +63,7 @@ img { display: block; max-width: 100%; }
   width: 100%;
   height: 100vh;
   overflow: hidden;
-  background: var(--white);
+  background: #111;
 }
 
 .scene-bg { position: absolute; inset: 0; z-index: 1; }
@@ -414,16 +414,16 @@ img { display: block; max-width: 100%; }
   letter-spacing: 0.5px;
 }
 
-/* Adjust sizes for Bebas Neue (taller cap height, no bold weight needed) */
-.nav-logo { font-size: 22px; font-weight: 400; letter-spacing: 1px; }
-.hero-text h1 { font-weight: 400; letter-spacing: 1px; }
-.section-title { font-weight: 400; letter-spacing: 1px; line-height: 0.92; }
-.service-title { font-size: 22px; font-weight: 400; letter-spacing: 0.5px; }
-.whyme-title { font-size: 24px; font-weight: 400; letter-spacing: 0.5px; }
-.project-title { font-size: 26px; font-weight: 400; letter-spacing: 0.5px; }
-.stat-value { font-weight: 400; letter-spacing: 1px; }
-.process-title { font-size: 22px; font-weight: 400; letter-spacing: 0.5px; }
-.footer-brand { font-size: 20px; font-weight: 400; letter-spacing: 1px; }
+/* Anton is inherently ultra-bold — enforce weight + sizes */
+.nav-logo { font-size: 20px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
+.hero-text h1 { font-weight: 900; letter-spacing: 1px; }
+.section-title { font-weight: 900; letter-spacing: 1px; line-height: 0.92; }
+.service-title { font-size: 24px; font-weight: 900; letter-spacing: 0.5px; }
+.whyme-title { font-size: 26px; font-weight: 900; letter-spacing: 0.5px; }
+.project-title { font-size: 28px; font-weight: 900; letter-spacing: 0.5px; }
+.stat-value { font-weight: 900; letter-spacing: 1px; }
+.process-title { font-size: 24px; font-weight: 900; letter-spacing: 0.5px; }
+.footer-brand { font-size: 20px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
 
 /* ── MENU TRIGGER (MENU / CLOSE) ── */
 .menu-trigger {

@@ -38,10 +38,10 @@ export default function Hero() {
       const p        = Math.max(0, Math.min(1, scrolled / total));
 
       if (blobRef.current) {
-        const scale = 1 + p * 40;
+        const scale = 1 + p * 18;
         blobRef.current.style.transform = `translate(-50%, -50%) scale(${scale})`;
+        blobRef.current.style.opacity = Math.max(0, 1 - p * 1.8);
       }
-      if (overlayRef.current)  overlayRef.current.style.opacity  = Math.max(0, 1 - p * 2.5);
       if (textRef.current)     textRef.current.style.opacity     = Math.max(0, 1 - p * 4);
       if (hintRef.current)     hintRef.current.style.opacity     = Math.max(0, 0.5 - p * 5);
       if (particlesRef.current) {
@@ -70,41 +70,29 @@ export default function Hero() {
           ))}
         </div>
 
-        {/* "16" text mask window */}
+        {/* "16" — white mask with hole, scales on scroll */}
         <div className="blob-window">
           <div className="blob-inner" ref={blobRef}>
-            <svg
-              viewBox="0 0 900 520"
-              xmlns="http://www.w3.org/2000/svg"
-              className="sixteen-svg"
-            >
+            <svg viewBox="0 0 1440 900" className="sixteen-svg" xmlns="http://www.w3.org/2000/svg">
               <defs>
-                <clipPath id="textClip">
+                <mask id="sixteenHole">
+                  <rect width="1440" height="900" fill="white"/>
                   <text
-                    x="50%"
-                    y="88%"
+                    x="1080" y="820"
                     textAnchor="middle"
                     fontFamily="Anton, Impact, sans-serif"
-                    fontSize="520"
-                    fontWeight="400"
-                  >
-                    16
-                  </text>
-                </clipPath>
+                    fontSize="820"
+                    fill="black"
+                  >16</text>
+                </mask>
               </defs>
-              <image
-                href={BG_IMAGES[0]}
-                x="0" y="0"
-                width="900" height="520"
-                preserveAspectRatio="xMidYMid slice"
-                clipPath="url(#textClip)"
-              />
+              <rect width="1440" height="900" fill="white" mask="url(#sixteenHole)"/>
             </svg>
           </div>
         </div>
 
-        {/* White overlay */}
-        <div className="white-overlay" ref={overlayRef} />
+        {/* overlay opacity driven by scroll — kept for fade-out of SVG mask */}
+        <div className="white-overlay" ref={overlayRef} style={{background:'transparent'}} />
 
         {/* Hero text */}
         <div className="hero-text" ref={textRef}>
