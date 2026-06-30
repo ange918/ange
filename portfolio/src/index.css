@@ -78,11 +78,21 @@ img { display: block; max-width: 100%; }
 }
 .img-layer.active { opacity: 1; }
 
-/* Blob window — full scene, blob-inner centred inside */
+/* White overlay sits above background images but BELOW the blob */
+.white-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--white);
+  z-index: 2;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+/* Blob window — full scene, blob-inner centred inside, above overlay */
 .blob-window {
   position: absolute;
   inset: 0;
-  z-index: 2;
+  z-index: 3;
   pointer-events: none;
 }
 
@@ -102,21 +112,12 @@ img { display: block; max-width: 100%; }
   transform: translate(-50%, -50%);
   width: 600px;
   height: 600px;
-  z-index: 3;
+  z-index: 4;
   pointer-events: none;
   will-change: transform, opacity;
 }
 
 .particle { position: absolute; }
-
-.white-overlay {
-  position: absolute;
-  inset: 0;
-  background: var(--white);
-  z-index: 4;
-  pointer-events: none;
-  will-change: opacity;
-}
 
 .hero-text {
   position: absolute;
