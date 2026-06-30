@@ -70,30 +70,38 @@ export default function Hero() {
           ))}
         </div>
 
-        {/* Blob window */}
+        {/* "16" text mask window */}
         <div className="blob-window">
           <div className="blob-inner" ref={blobRef}>
-            <svg viewBox="0 0 340 500" xmlns="http://www.w3.org/2000/svg" width="340" height="500">
+            <svg
+              viewBox="0 0 900 520"
+              xmlns="http://www.w3.org/2000/svg"
+              width="900"
+              height="520"
+            >
               <defs>
-                <clipPath id="blobClip">
-                  <path d="M163,8 C211,3 265,21 299,61 C332,101 340,158 323,203 C312,237 287,260 272,288 C252,322 238,350 197,347 C153,344 119,320 88,290 C57,260 27,224 13,176 C0,128 7,74 34,44 C64,11 115,-3 163,8Z"/>
+                <clipPath id="textClip">
+                  <text
+                    x="50%"
+                    y="88%"
+                    textAnchor="middle"
+                    fontFamily="Anton, Impact, sans-serif"
+                    fontSize="520"
+                    fontWeight="400"
+                  >
+                    16
+                  </text>
                 </clipPath>
               </defs>
               <image
                 href={BG_IMAGES[0]}
-                width="340" height="500"
+                x="0" y="0"
+                width="900" height="520"
                 preserveAspectRatio="xMidYMid slice"
-                clipPath="url(#blobClip)"
+                clipPath="url(#textClip)"
               />
             </svg>
           </div>
-        </div>
-
-        {/* Floating particles */}
-        <div className="blob-particles" ref={particlesRef}>
-          <div className="particle" style={{ width:60, height:40, top:'14%', left:'72%', borderRadius:'50%', background:'#0a0a0a', opacity:0.85 }}/>
-          <div className="particle" style={{ width:22, height:22, top:'56%', left:'80%', borderRadius:'50%', background:'#0a0a0a', opacity:0.85 }}/>
-          <div className="particle" style={{ width:16, height:16, top:'72%', left:'17%', borderRadius:'50%', background:'#0a0a0a', opacity:0.85 }}/>
         </div>
 
         {/* White overlay */}
