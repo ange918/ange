@@ -8,27 +8,25 @@ const BG_IMAGES = [
 ];
 
 export default function Hero() {
-  const driverRef   = useRef(null);
-  const blobRef     = useRef(null);
-  const overlayRef  = useRef(null);
-  const textRef     = useRef(null);
-  const hintRef     = useRef(null);
-  const particlesRef = useRef(null);
-  const imgRefs     = useRef([]);
-  const currentImg  = useRef(0);
+  const driverRef  = useRef(null);
+  const maskRef    = useRef(null); // the white SVG mask
+  const textRef    = useRef(null);
+  const hintRef    = useRef(null);
+  const imgRefs    = useRef([]);
+  const currentImg = useRef(0);
 
+  // Cycle background images
   useEffect(() => {
-    // cycle background images
     const interval = setInterval(() => {
-      if (imgRefs.current.length === 0) return;
+      if (!imgRefs.current.length) return;
       imgRefs.current[currentImg.current].classList.remove('active');
       currentImg.current = (currentImg.current + 1) % BG_IMAGES.length;
       imgRefs.current[currentImg.current].classList.add('active');
     }, 2800);
-
     return () => clearInterval(interval);
   }, []);
 
+  // Scroll animation: scale up the white mask (16 hole gets bigger → full bg revealed)
   useEffect(() => {
     const onScroll = () => {
       const driver = driverRef.current;
@@ -37,17 +35,14 @@ export default function Hero() {
       const scrolled = -driver.getBoundingClientRect().top;
       const p        = Math.max(0, Math.min(1, scrolled / total));
 
-      if (blobRef.current) {
-        const scale = 1 + p * 18;
-        blobRef.current.style.transform = `translate(-50%, -50%) scale(${scale})`;
-        blobRef.current.style.opacity = Math.max(0, 1 - p * 1.8);
+      // White mask scales up from center → white edges leave screen → bg fully visible
+      if (maskRef.current) {
+        const scale = 1 + p * 20;
+        maskRef.current.style.transform = `translate(-50%, -50%) scale(${scale})`;
       }
-      if (textRef.current)     textRef.current.style.opacity     = Math.max(0, 1 - p * 4);
-      if (hintRef.current)     hintRef.current.style.opacity     = Math.max(0, 0.5 - p * 5);
-      if (particlesRef.current) {
-        particlesRef.current.style.transform = `translate(-50%,-50%) scale(${1 + p * 7})`;
-        particlesRef.current.style.opacity   = Math.max(0, 1 - p * 3);
-      }
+
+      if (textRef.current) textRef.current.style.opacity = Math.max(0, 1 - p * 4);
+      if (hintRef.current) hintRef.current.style.opacity = Math.max(0, 0.5 - p * 5);
     };
 
     window.addEventListener('scroll', onScroll, { passive: true });
@@ -58,7 +53,7 @@ export default function Hero() {
     <div className="scroll-driver" ref={driverRef}>
       <div className="sticky-scene">
 
-        {/* Background images */}
+        {/* Dark background + images — visible only through the "16" hole */}
         <div className="scene-bg">
           {BG_IMAGES.map((src, i) => (
             <div
@@ -70,31 +65,39 @@ export default function Hero() {
           ))}
         </div>
 
-        {/* "16" — white mask with hole, scales on scroll */}
-        <div className="blob-window">
-          <div className="blob-inner" ref={blobRef}>
-            <svg viewBox="0 0 1440 900" className="sixteen-svg" xmlns="http://www.w3.org/2000/svg">
-              <defs>
-                <mask id="sixteenHole">
-                  <rect width="1440" height="900" fill="white"/>
-                  <text
-                    x="1080" y="820"
-                    textAnchor="middle"
-                    fontFamily="Anton, Impact, sans-serif"
-                    fontSize="820"
-                    fill="black"
-                  >16</text>
-                </mask>
-              </defs>
-              <rect width="1440" height="900" fill="white" mask="url(#sixteenHole)"/>
-            </svg>
-          </div>
+        {/*
+          White SVG that covers the whole viewport.
+          The "16" is a hole (black in mask = transparent = shows bg through).
+          On scroll, this SVG scales up → white border moves off-screen → full bg revealed.
+        */}
+        <div className="sixteen-mask-wrap" ref={maskRef}>
+          <svg
+            viewBox="0 0 1440 900"
+            className="sixteen-svg"
+            xmlns="http://www.w3.org/2000/svg"
+            preserveAspectRatio="xMidYMid slice"
+          >
+            <defs>
+              <mask id="sixteenHole">
+                {/* White = show white overlay */}
+                <rect width="1440" height="900" fill="white"/>
+                {/* Black = hole → background shows through */}
+                <text
+                  x="72%"
+                  y="96%"
+                  textAnchor="middle"
+                  fontFamily="Anton, Impact, sans-serif"
+                  fontSize="860"
+                  fill="black"
+                >16</text>
+              </mask>
+            </defs>
+            {/* The white layer with "16" punched out */}
+            <rect width="1440" height="900" fill="white" mask="url(#sixteenHole)"/>
+          </svg>
         </div>
 
-        {/* overlay opacity driven by scroll — kept for fade-out of SVG mask */}
-        <div className="white-overlay" ref={overlayRef} style={{background:'transparent'}} />
-
-        {/* Hero text */}
+        {/* Hero text — bottom left */}
         <div className="hero-text" ref={textRef}>
           <h1>
             {hero.headline.map((line, i) => (
