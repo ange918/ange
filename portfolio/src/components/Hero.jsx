@@ -76,8 +76,7 @@ export default function Hero() {
             <svg
               viewBox="0 0 900 520"
               xmlns="http://www.w3.org/2000/svg"
-              width="900"
-              height="520"
+              className="sixteen-svg"
             >
               <defs>
                 <clipPath id="textClip">

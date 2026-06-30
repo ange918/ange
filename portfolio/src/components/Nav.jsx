@@ -7,9 +7,17 @@ const LINKS = [
   { href: '#contact',  label: 'Contact' },
 ];
 
+const GridIcon = () => (
+  <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
+    <rect x="0"  y="0"  width="9" height="9" fill="currentColor"/>
+    <rect x="13" y="0"  width="9" height="9" fill="currentColor"/>
+    <rect x="0"  y="13" width="9" height="9" fill="currentColor"/>
+    <rect x="13" y="13" width="9" height="9" fill="currentColor"/>
+  </svg>
+);
+
 export default function Nav() {
   const [open, setOpen] = useState(false);
-
   const close = () => setOpen(false);
 
   return (
@@ -28,29 +36,42 @@ export default function Nav() {
           {LINKS.map(l => <li key={l.href}><a href={l.href}>{l.label}</a></li>)}
         </ul>
 
-        {/* Burger button — mobile only */}
-        <button
-          className={`burger${open ? ' burger--open' : ''}`}
-          onClick={() => setOpen(o => !o)}
-          aria-label="Menu"
-        >
-          <span /><span /><span />
+        {/* Mobile menu trigger */}
+        <button className="menu-trigger" onClick={() => setOpen(o => !o)} aria-label="Menu">
+          <span className="menu-trigger-label">{open ? 'CLOSE' : 'MENU'}</span>
+          <GridIcon />
         </button>
       </nav>
 
-      {/* Mobile drawer */}
+      {/* Mobile full-screen drawer */}
       <div className={`mobile-drawer${open ? ' mobile-drawer--open' : ''}`}>
-        <ul>
+        <div className="drawer-top">
+          <div className="nav-logo" style={{ color: '#fff' }}>
+            <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+              <rect width="28" height="28" rx="6" fill="#fff"/>
+              <text x="5" y="20" fontSize="14" fontWeight="900" fill="#0a0a0a" fontFamily="Helvetica Neue, sans-serif">A</text>
+            </svg>
+            Ange Akonde
+          </div>
+          <button className="menu-trigger menu-trigger--light" onClick={close} aria-label="Fermer">
+            <span className="menu-trigger-label">CLOSE</span>
+            <GridIcon />
+          </button>
+        </div>
+
+        <ul className="drawer-links">
           {LINKS.map(l => (
             <li key={l.href}>
               <a href={l.href} onClick={close}>{l.label}</a>
             </li>
           ))}
         </ul>
-      </div>
 
-      {/* Backdrop */}
-      {open && <div className="drawer-backdrop" onClick={close} />}
+        <div className="drawer-socials">
+          <a href="https://instagram.com" target="_blank" rel="noreferrer">Instagram</a>
+          <a href="https://github.com" target="_blank" rel="noreferrer">GitHub</a>
+        </div>
+      </div>
     </>
   );
 }
