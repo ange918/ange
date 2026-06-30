@@ -2,9 +2,11 @@ import { useEffect, useRef } from 'react';
 import { hero } from '../data/content';
 
 const BG_IMAGES = [
-  'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1600&q=80',
-  'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1600&q=80',
-  'https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=1600&q=80',
+  '/hero1.jpg',
+  '/hero2.jpg',
+  '/hero3.jpg',
+  '/hero4.jpg',
+  '/hero5.jpg',
 ];
 
 export default function Hero() {
