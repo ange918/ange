@@ -1,10 +1,12 @@
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { hero } from '../data/content';
 
 const BG_IMAGES = [
-  'https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=1600&q=80',
-  'https://images.unsplash.com/photo-1531482615713-2afd69097998?w=1600&q=80',
-  'https://images.unsplash.com/photo-1504639725590-34d0984388bd?w=1600&q=80',
+  '/hero1.jpg',
+  '/hero2.jpg',
+  '/hero3.jpg',
+  '/hero4.jpg',
+  '/hero5.jpg',
 ];
 
 export default function Hero() {
@@ -16,16 +18,16 @@ export default function Hero() {
   const particlesRef = useRef(null);
   const imgRefs     = useRef([]);
   const currentImg  = useRef(0);
+  const [blobImg, setBlobImg] = useState(BG_IMAGES[0]);
 
   useEffect(() => {
-    // cycle background images
     const interval = setInterval(() => {
-      if (imgRefs.current.length === 0) return;
+      if (!imgRefs.current.length) return;
       imgRefs.current[currentImg.current].classList.remove('active');
       currentImg.current = (currentImg.current + 1) % BG_IMAGES.length;
       imgRefs.current[currentImg.current].classList.add('active');
+      setBlobImg(BG_IMAGES[currentImg.current]);
     }, 2800);
-
     return () => clearInterval(interval);
   }, []);
 
@@ -80,7 +82,7 @@ export default function Hero() {
                 </clipPath>
               </defs>
               <image
-                href={BG_IMAGES[0]}
+                href={blobImg}
                 width="340" height="500"
                 preserveAspectRatio="xMidYMid slice"
                 clipPath="url(#blobClip)"

@@ -78,7 +78,23 @@ img { display: block; max-width: 100%; }
 }
 .img-layer.active { opacity: 1; }
 
-.blob-window { position: absolute; inset: 0; z-index: 2; overflow: hidden; }
+/* White overlay sits above background images but BELOW the blob */
+.white-overlay {
+  position: absolute;
+  inset: 0;
+  background: var(--white);
+  z-index: 2;
+  pointer-events: none;
+  will-change: opacity;
+}
+
+/* Blob window — full scene, blob-inner centred inside, above overlay */
+.blob-window {
+  position: absolute;
+  inset: 0;
+  z-index: 3;
+  pointer-events: none;
+}
 
 .blob-inner {
   position: absolute;
@@ -96,19 +112,12 @@ img { display: block; max-width: 100%; }
   transform: translate(-50%, -50%);
   width: 600px;
   height: 600px;
-  z-index: 3;
+  z-index: 4;
   pointer-events: none;
   will-change: transform, opacity;
 }
 
-.white-overlay {
-  position: absolute;
-  inset: 0;
-  background: var(--white);
-  z-index: 4;
-  pointer-events: none;
-  will-change: opacity;
-}
+.particle { position: absolute; }
 
 .hero-text {
   position: absolute;
@@ -414,13 +423,115 @@ img { display: block; max-width: 100%; }
   letter-spacing: 0.5px;
 }
 
-/* Adjust sizes for Bebas Neue (taller cap height, no bold weight needed) */
-.nav-logo { font-size: 22px; font-weight: 400; letter-spacing: 1px; }
-.hero-text h1 { font-weight: 400; letter-spacing: 1px; }
-.section-title { font-weight: 400; letter-spacing: 1px; line-height: 0.92; }
-.service-title { font-size: 22px; font-weight: 400; letter-spacing: 0.5px; }
-.whyme-title { font-size: 24px; font-weight: 400; letter-spacing: 0.5px; }
-.project-title { font-size: 26px; font-weight: 400; letter-spacing: 0.5px; }
-.stat-value { font-weight: 400; letter-spacing: 1px; }
-.process-title { font-size: 22px; font-weight: 400; letter-spacing: 0.5px; }
-.footer-brand { font-size: 20px; font-weight: 400; letter-spacing: 1px; }
+/* Anton is inherently ultra-bold — enforce weight + sizes */
+.nav-logo { font-size: 20px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
+.hero-text h1 { font-weight: 900; letter-spacing: 1px; }
+.section-title { font-weight: 900; letter-spacing: 1px; line-height: 0.92; }
+.service-title { font-size: 24px; font-weight: 900; letter-spacing: 0.5px; }
+.whyme-title { font-size: 26px; font-weight: 900; letter-spacing: 0.5px; }
+.project-title { font-size: 28px; font-weight: 900; letter-spacing: 0.5px; }
+.stat-value { font-weight: 900; letter-spacing: 1px; }
+.process-title { font-size: 24px; font-weight: 900; letter-spacing: 0.5px; }
+.footer-brand { font-size: 20px; font-weight: 900; letter-spacing: 1px; text-transform: uppercase; }
+
+/* ── MENU TRIGGER (MENU / CLOSE) ── */
+.menu-trigger {
+  display: none;
+  align-items: center;
+  gap: 10px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--black);
+  z-index: 101;
+  padding: 0;
+}
+
+.menu-trigger--light { color: var(--white); }
+
+.menu-trigger-label {
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+}
+
+/* ── MOBILE DRAWER ── */
+.mobile-drawer {
+  position: fixed;
+  inset: 0;
+  background: var(--black);
+  z-index: 99;
+  display: flex;
+  flex-direction: column;
+  padding: 24px 28px 40px;
+  transform: translateY(-100%);
+  transition: transform 0.5s cubic-bezier(0.77, 0, 0.18, 1);
+}
+
+.mobile-drawer--open { transform: translateY(0); }
+
+.drawer-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: auto;
+}
+
+.drawer-links {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  text-align: right;
+  flex: 1;
+  justify-content: center;
+}
+
+.drawer-links li a {
+  font-family: var(--font-display);
+  font-size: clamp(52px, 16vw, 88px);
+  font-weight: 400;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--white);
+  display: block;
+  line-height: 1.05;
+  transition: opacity 0.2s;
+}
+.drawer-links li a:hover { opacity: 0.4; }
+
+.drawer-socials {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+  margin-top: auto;
+}
+
+.drawer-socials a {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  color: rgba(255,255,255,0.4);
+  transition: opacity 0.2s;
+}
+.drawer-socials a:hover { opacity: 1; color: var(--white); }
+
+@media (max-width: 900px) {
+  .nav-links { display: none; }
+  .menu-trigger { display: flex; }
+
+  .blob-inner svg {
+    width: 260px;
+    height: 380px;
+  }
+}
+
+@media (max-width: 900px) {
+  .sixteen-svg {
+    width: 100vw;
+    height: 58vw;
+  }
+}
