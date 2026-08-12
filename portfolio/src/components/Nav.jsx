@@ -1,11 +1,6 @@
 import { useState } from 'react';
 
-const LINKS = [
-  { href: '#services', label: 'Services' },
-  { href: '#projects', label: 'Projets' },
-  { href: '#about',    label: 'À propos' },
-  { href: '#contact',  label: 'Contact' },
-];
+const LINKS = [];
 
 const GridIcon = () => (
   <svg width="22" height="22" viewBox="0 0 22 22" fill="none">
